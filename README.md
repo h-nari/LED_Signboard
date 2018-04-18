@@ -17,7 +17,7 @@ Webサーバとして動作し、ブラウザでアクセスすることで
 
 ## 詳細な情報
 
-- [Wiki](https://github.com/h-nari/LED_Signboard/wiki）
+- [Wiki](https://github.com/h-nari/LED_Signboard/wiki)
   - [必要なハードウェア](https://github.com/h-nari/LED_Signboard/wiki/Hardware)
   - [インストール方法](https://github.com/h-nari/LED_Signboard/wiki/Install)
   - [使用説明書](https://github.com/h-nari/LED_Signboard/wiki/Manual)
