@@ -14,6 +14,9 @@ esp8266 arduinoでコンパイル＆書込を行います。
 Webサーバとして動作し、ブラウザでアクセスすることで
 表示するメッセージの入力、編集を行うことができます。
 
+HSES-LMC1は無線LAN（WiFi)経由でネットワークに接続するので、
+無線LANが使えない環境では、このプログラムは使用できません。
+
 ## 主な機能
 
 - 静止文字の表示
@@ -26,6 +29,17 @@ Webサーバとして動作し、ブラウザでアクセスすることで
 ブラウザは google chrome, FireFox, Opera, Safari, Microsoft Edgeなどを
 推奨します。  
 Internet Explorerには対応していません。
+
+## ディレクトリ構成
+
+各サブディレクトリの中身を紹介します。
+
+- LED_Signboard: プログラム(スケッチ)
+- files: javascriptやhtmlの元ファイル
+- img: ドキュメント用の画像ファイル
+- python: 開発用のpythonプログラム
+- sdcard: sdcardに書き込むファイル
+
 
 ## 詳細な情報
 
