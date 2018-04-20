@@ -38,7 +38,7 @@ class JsonParser
  public:
   JsonParser();
   void reset();
-  bool parse_file(const char *path);
+  bool virtual parse_file(const char *path);
   bool error(const char *fmt, ...);
   bool warning(const char *fmt, ...);
   bool getBoolean(json_value_t *vp, bool *bp);
