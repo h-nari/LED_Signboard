@@ -24,7 +24,8 @@ Webサーバとして動作し、ブラウザでアクセスすることで
 ## 対応するブラウザ
 
 ブラウザは google chrome, FireFox, Opera, Safari, Microsoft Edgeなどを
-推奨します。 Internet Explorerには対応していません。
+推奨します。  
+Internet Explorerには対応していません。
 
 ## 詳細な情報
 
