@@ -82,19 +82,31 @@ bool ConfigJsonParser::handleValue(json_value_t *vp)
     break;
   case S_MODULE_ROW:
     if(!getInt(vp, &iVal)) return false;
-    m_pTarget->m_moduleRow = iVal;
+    if(iVal > 0) 
+      m_pTarget->m_moduleRow = iVal;
+    else
+      Serial.printf("Bad row value:%d\n", iVal);
     break;
   case S_MODULE_COLUMN:
     if(!getInt(vp, &iVal)) return false;
-    m_pTarget->m_moduleColumn = iVal;
+    if(iVal > 0)
+      m_pTarget->m_moduleColumn = iVal;
+    else
+      Serial.printf("Bad column value:%d\n", iVal);
     break;
   case S_BRIGHT:
     if(!getInt(vp, &iVal)) return false;
-    m_pTarget->m_bright = iVal;
+    if(iVal >= 0 && iVal <= 100)
+      m_pTarget->m_bright = iVal;
+    else
+      Serial.printf("Bad bright value:%d\n", iVal);
     break;
   case S_PLANE:
     if(!getInt(vp, &iVal)) return false;
-    m_pTarget->m_plane = iVal;
+    if(iVal > 0 && iVal <= 8)
+      m_pTarget->m_plane = iVal;
+    else
+      Serial.printf("Bad plane value:%d\n", iVal);
     break;
   case S_SCRIPT:
     if(vp->type != JVT_STRING) return error("string expected");
@@ -104,7 +116,10 @@ bool ConfigJsonParser::handleValue(json_value_t *vp)
     break;
   case S_LEDMODE:
     if(!getInt(vp, &iVal)) return false;
-    m_pTarget->m_ledMode = iVal;
+    if(iVal >= 0)
+      m_pTarget->m_ledMode = iVal;
+    else
+      Serial.printf("Bad LEDMODE value:%d\n", iVal);
     break;
   default:
     return error("Bad state:%d",m_state);
