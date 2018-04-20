@@ -27,6 +27,17 @@ Webサーバとして動作し、ブラウザでアクセスすることで
 推奨します。  
 Internet Explorerには対応していません。
 
+## ディレクトリ構成
+
+各サブディレクトリの中身を紹介します。
+
+- LED_Signboard: プログラム(スケッチ)
+- files: javascriptやhtmlの元ファイル
+- img: ドキュメント用の画像ファイル
+- python: 開発用のpythonプログラム
+- sdcard: sdcardに書き込むファイル
+
+
 ## 詳細な情報
 
 - [Wiki](https://github.com/h-nari/LED_Signboard/wiki)
