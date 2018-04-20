@@ -1,0 +1,21 @@
+{
+ "player": "static-text",
+ "title": "電",
+ "rx": "0",
+ "ry": "16",
+ "rw": "16",
+ "rh": "16",
+ "bg": "#0000ff",
+ "pre-clear": true,
+ "post-clear": false,
+ "font": "0",
+ "fontsize": "1",
+ "halign": "1",
+ "ox": "0",
+ "valign": "1",
+ "oy": "0",
+ "color": "#ff0000",
+ "time": "1",
+ "replace": true,
+ "text": "電"
+}

@@ -1,0 +1,51 @@
+#main {
+    margin: 20px;
+/*    background-color: #fffff0; */
+}
+body > h1 {
+    margin: 20px;
+}
+
+body > p {
+    margin: 30px;
+}
+
+.part-block {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid blue;
+}
+
+.explain {
+  color: red;
+  position: relative;
+  top: 8px;
+}
+
+#nav {
+  color: white;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  margin: 2px;
+}
+
+#status {
+  color: #ccc;
+}
+
+td.col-id input {
+  width: 50px;
+}
+
+table.msg_list > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.col-disp,.col-edit,.col-delete {
+    text-align: center;
+}
+
+.col-no-msg {
+    text-align: center;
+    color: red;
+}
