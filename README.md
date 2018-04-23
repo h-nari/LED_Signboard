@@ -26,9 +26,8 @@ HSES-LMC1は無線LAN（WiFi)経由でネットワークに接続するので、
 
 ## 対応するブラウザ
 
-ブラウザは google chrome, FireFox, Opera, Safari, Microsoft Edgeなどを
-推奨します。  
-Internet Explorerには対応していません。
+ブラウザは google chrome, FireFoxのみです。
+他のブラウザ、Internet Explorer, Edge, Safari, Opera等では動作しません。
 
 ## ディレクトリ構成
 
