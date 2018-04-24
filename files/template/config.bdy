@@ -23,21 +23,23 @@
         <label class="control-label col-xs-4">モジュール 横 個数:</label>
         <div class="col-xs-2">
           <input type="number" size="3" id="config-moduleColumn"
-		 class="form-control">
+		 class="form-control" min="1">
         </div>
       </div>
 
       <div class="form-group">
         <label class="control-label col-xs-4">モジュール 縦 個数:</label>
         <div class="col-xs-2">
-          <input type="number" id="config-moduleRow" class="form-control">
+          <input type="number" id="config-moduleRow" class="form-control"
+                 min="1">
         </div>
       </div>
 
       <div class="form-group">
         <label class="control-label col-xs-4">表示プレーン数:</label>
         <span class="col-xs-2">
-          <input type="number" id="config-plane" class="form-control">
+          <input type="number" id="config-plane" class="form-control"
+                 min="1" max="8">
         </span>
 	<span class="explain">
 	  1～8, プレーン数が増えると表示できる中間調が増えます
@@ -45,9 +47,10 @@
       </div>
 
       <div class="form-group">
-        <label class="control-label col-xs-4">明るさ]</label>
+        <label class="control-label col-xs-4">明るさ:</label>
         <span class="col-xs-2">
-          <input type="number" id="config-bright" class="form-control">
+          <input type="number" id="config-bright" class="form-control"
+                 min="0" max="100">
         </span>
 	<span class="explain">
 	  100(最大輝度)～0(消灯)
@@ -66,7 +69,7 @@
 
       <div class="form-group">
         <label class="control-label col-xs-4">LEDモード (bit配列):</label>
-        <div class="col-xs-4">
+        <span class="col-xs-4">
           <select id="config-ledMode" class="form-control">
             <option value="0" selected>
               モード0: (R0,G0,B0,R1,G1,B1)
@@ -75,7 +78,10 @@
               モード1: (G0,B0,R0,G1,B1,R1)
              </option>
           </select>
-        </div>
+        </span>
+        <span class="explain">
+          色が変だったら、ここを変更してみて下さい
+        </span>
       </div>
 
       <div class="form-group" class="part-block">

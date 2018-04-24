@@ -33,20 +33,18 @@ RomFontx fontx(ILGH16XB,ILGZ16XB);
 
 #define JST 3600*9
 
-uint8_t imgBuf[20*1024];
+uint8_t imgBuf[16*1024];
 
 ESP8266WebServer server(80);
 SignboardPlayer player;
 
 void setup(void){
   Serial.begin(115200);
-
-  Serial.println("\n\nReset:");
 	delay(100);
+  Serial.println("\n\nReset:");
 
   LedMat.begin();
   LedMat.setImgBuf(imgBuf, sizeof(imgBuf));
-	// LedMat.setLedMode(1);
 	LedMat.setFont(&fontx);
 
 	player.addFont(&fontx, "IPAゴシック16ドット");
@@ -84,10 +82,11 @@ void setup(void){
 #if USE_FIX_IP
 	WiFi.config(IP_ADDR, GATEWAY, NETMASK, DNS_SERVER);
 #endif
-	Serial.print("IP address:");
+	Serial.print("IP ADDRESS:  ");
   Serial.println(WiFi.localIP());
 	uint8_t mac[6];
 	WiFi.macAddress(mac);
+	Serial.print("MAC ADDRESS:");
 	for(int i=0; i<6; i++)
 		Serial.printf("%c%02x",i>0 ?'-':' ',mac[i]);
 	Serial.println();

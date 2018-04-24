@@ -35,17 +35,36 @@ static bool auth_check()
   return true;
 }
 
-static bool browser_check()
+static const char *browser_name()
 {
   String ua = server.header("User-Agent");
+  const char *name = "unknown";
+  
+  ua.toLowerCase();
+  const char *u = ua.c_str();
+  if(strstr(u,"msie"))         name = "ie";
+  else if(strstr(u,"trident")) name = "ie";
+  else if(strstr(u,"edge"))    name = "edge";
+  else if(strstr(u,"chrome"))  name = "chrome";
+  else if(strstr(u,"safari"))  name = "safari";
+  else if(strstr(u,"firefox")) name = "firefox";
+  else if(strstr(u,"opera"))   name = "opera";
 
-  if(ua.indexOf(String("Trident")) >= 0 ||
-     ua.indexOf(String("MSIE"))     >= 0){
-    server.send(200,"text/plain;charset=UTF-8",
-		F("Internet Explorer はサポートされていません。"));
-    return false;
-  }
-  return true;
+  Serial.printf("%s(%d) %s : %s\n",__FUNCTION__,__LINE__,name, u);
+
+  return name;
+}
+
+static bool browser_check()
+{
+  const char *b = browser_name();
+
+  if(strcmp(b,"chrome")==0 || strcmp(b,"firefox")==0)
+    return true;
+
+  server.send(200,"text/plain;charset=UTF-8",
+              F("ブラウザはchrome, firefoxのみサポートされています。"));
+  return false;
 }
 
 static void sendOK()

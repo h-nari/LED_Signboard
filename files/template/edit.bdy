@@ -45,11 +45,13 @@
 	    </span>
 	    <label class="control-label col-xs-1">w:</label>
 	    <span class="col-xs-2">
-	      <input type="number" id="msg-rw" class="form-control" value="64">
+	      <input type="number" id="msg-rw" class="form-control" value="64"
+                     min="1">
 	    </span>
 	    <label class="control-label col-xs-1">h:</label>
 	    <span class="col-xs-2">
-	      <input type="number" id="msg-rh" class="form-control" value="32">
+	      <input type="number" id="msg-rh" class="form-control" value="32"
+                     min="1">
 	    </span>
 	  </div>
 	</div>
@@ -105,6 +107,9 @@
 		倍率:
 	      </label>
 	      <span class="col-xs-2">
+                <input id="static-text-fontsize" class="form-control"
+                       type="number" min="1" max="10" value="1">
+                <!--
 		<select id="static-text-fontsize" class="form-control">
 		  <option value="1" selected>1</option>
 		  <option value="2">2</option>
@@ -112,6 +117,7 @@
 		  <option value="4">4</option>
 		  <option value="5">5</option>
 		</select>
+                -->
 	      </span>
 	    </span>
 	  </div>
@@ -158,7 +164,7 @@
             <label class="control-label col-xs-2">表示時間:</label>
             <span class="col-xs-2">
               <input type="number" size="6" id="static-text-time"
-		     class="form-control " value="1.0">
+		     class="form-control " value="1.0" min="0.0" step="0.1">
             </span>
             <span class="explain">単位 秒</span>
 	  </div>
@@ -169,8 +175,9 @@
 		     class="form-control " checked>
 	    </span>
 	    <span class="explain">
-	      % + 文字を　日付、時刻等の数字に置き換える 。<br/>
-	      %Y->年,%m->月,%d->日,%a->曜日,%H->時,%M->分,%S-> 秒
+	      % + 文字を日付、時刻等の数字に置き換える 。
+	      %Y->年,%m->月,%d->日,%H->時,%M->分,%S->秒,
+              %a->曜日(日月..),%A->曜日(Sun,Mon,..)
 	    </span>
           </div>
           <div class="form-group">
@@ -241,7 +248,7 @@
 		[dot/sec]
 	      </label>
 	      <span class="col-xs-2">
-		<input type="number" id="scroll-text-speed"
+		<input type="number" id="scroll-text-speed" min="0.1" 
 		       class="form-control" value="32.0">
 	      </span>
 	      <label class="control-label col-xs-2">
@@ -267,8 +274,9 @@
 		     class="form-control " checked>
 	    </span>
 	    <span class="explain">
-	      % + 文字を　日付、時刻等の数字に置き換える 。<br/>
-	      %Y->年,%m->月,%d->日,%a->曜日,%H->時,%M->分,%S-> 秒
+	      % + 文字を日付、時刻等の数字に置き換える 。
+	      %Y->年,%m->月,%d->日,%H->時,%M->分,%S->秒,
+              %a->曜日(日月..),%A->曜日(Sun,Mon,..)
 	    </span>
           </div>
           <div class="form-group">

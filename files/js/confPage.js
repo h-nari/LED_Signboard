@@ -99,7 +99,7 @@ function get_data(){
 
 function config_write()
 {
-    console.log("config_write");
+    status('設定書込');
 
     var d = get_data();
     var formData = new FormData();
@@ -117,24 +117,20 @@ function config_write()
         contentType : false,
         processData : false,
         dataType: "html"
-    })
-    .done(function(data, textStatus,jqXHR){
-        console.log("done:" + textStatus + " data:" + data);
+    }).done(function(data, textStatus,jqXHR){
+        status('設定書込完了');
         $.ajax({
             url: "/api",
             type: "POST",
             data: {cmd : "reload_config"},
-        })
-        .done(function(data,textStatus,jqXHR){
-            console.log("reload_config done:" + textStatus);
-        })
-        .fail(function(jqXHR,textStatus,errorThrown){
-            console.log("reload_config fail:" + textStatus);
+        }).done(function(data,textStatus,jqXHR){
+            status('設定再読込完了');
+        }).fail(function(jqXHR,textStatus,errorThrown){
+            status('設定再読込失敗');
         });
-
     })
     .fail(function(jqXHR, textStatus, errorThrown){
-        console.log("fail:" + textStatus);
+        status('設定書込失敗');
     });
 }
 
