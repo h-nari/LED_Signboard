@@ -1,12 +1,12 @@
 {
  "player": "static-text",
- "title": "電",
- "rx": "0",
- "ry": "16",
+ "title": "緑",
+ "rx": "16",
+ "ry": "0",
  "rw": "16",
  "rh": "16",
- "bg": "#0000ff",
- "pre-clear": true,
+ "bg": "#000000",
+ "pre-clear": false,
  "post-clear": false,
  "font": "0",
  "fontsize": "1",
@@ -14,8 +14,8 @@
  "ox": "0",
  "valign": "1",
  "oy": "0",
- "color": "#ff0000",
+ "color": "#00ff00",
  "time": "1",
  "replace": true,
- "text": "電"
+ "text": "緑"
 }

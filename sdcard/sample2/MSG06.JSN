@@ -1,12 +1,12 @@
 {
  "player": "static-text",
- "title": "青",
- "rx": "32",
- "ry": "0",
+ "title": "示",
+ "rx": "48",
+ "ry": "16",
  "rw": "16",
  "rh": "16",
- "bg": "#000000",
- "pre-clear": false,
+ "bg": "#800000",
+ "pre-clear": true,
  "post-clear": false,
  "font": "0",
  "fontsize": "1",
@@ -17,5 +17,5 @@
  "color": "#0000ff",
  "time": "1",
  "replace": true,
- "text": "青"
+ "text": "示"
 }

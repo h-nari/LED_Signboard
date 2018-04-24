@@ -1,46 +1,9 @@
-{
- "msg": [
-  {
-   "id": "1",
-   "enable": true,
-   "title": "LED",
-   "player": "static-text"
-  },
-  {
-   "id": "2",
-   "enable": true,
-   "title": "SIGNBOARD",
-   "player": "static-text"
-  },
-  {
-   "id": "3",
-   "enable": true,
-   "title": "電",
-   "player": "static-text"
-  },
-  {
-   "id": "4",
-   "enable": true,
-   "title": "光",
-   "player": "static-text"
-  },
-  {
-   "id": "5",
-   "enable": true,
-   "title": "掲",
-   "player": "static-text"
-  },
-  {
-   "id": 6,
-   "enable": true,
-   "title": "示",
-   "player": "static-text"
-  },
-  {
-   "id": 7,
-   "enable": true,
-   "title": "スクロールアウト",
-   "player": "scroll-text"
-  }
- ]
+{ "msg":[
+{ "id": 1, "enable": true, "title": "画面クリア", "player": "static-text"}
+,{ "id": 2, "enable": true, "title": "赤", "player": "static-text"}
+,{ "id": 3, "enable": true, "title": "緑", "player": "static-text"}
+,{ "id": 4, "enable": true, "title": "青", "player": "static-text"}
+,{ "id": 5, "enable": true, "title": "LED_Signboard は ...", "player": "scroll-text"}
+,{ "id": 6, "enable": true, "title": "高速スクロール", "player": "scroll-text"}
+]
 }

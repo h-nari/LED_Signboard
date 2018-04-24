@@ -1,21 +1,21 @@
 {
  "player": "static-text",
- "title": "画面クリア",
+ "title": "SIGNBOARD",
  "rx": "0",
- "ry": "0",
+ "ry": "8",
  "rw": "64",
- "rh": "32",
+ "rh": "8",
  "bg": "#000000",
  "pre-clear": true,
- "post-clear": true,
- "font": "0",
+ "post-clear": false,
+ "font": "1",
  "fontsize": "1",
  "halign": "1",
  "ox": "0",
  "valign": "1",
  "oy": "0",
- "color": "#ffffff",
+ "color": "#ffff00",
  "time": "1.0",
  "replace": true,
- "text": ""
+ "text": "SIGNBOARD"
 }

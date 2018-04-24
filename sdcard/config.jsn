@@ -3,7 +3,7 @@
     "moduleRow"    : 1,
     "moduleColumn" : 1,
     "plane" : 1,
-    "bright" : 5,
+    "bright" : 10,
     "script" : "sample1",
-    "ledMode": 1
+    "ledMode": 0
 }
