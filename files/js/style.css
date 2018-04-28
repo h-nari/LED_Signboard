@@ -49,3 +49,7 @@ table.msg_list > tbody > tr > td {
     text-align: center;
     color: red;
 }
+
+#copy-script-dialog  label {
+    margin-top: 30px;
+}

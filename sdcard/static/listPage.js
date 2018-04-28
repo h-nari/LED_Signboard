@@ -7,7 +7,7 @@ $(function(){
     $("#btn-new-msg1,#btn-new-msg2").on('click', new_msg);
     $("#btn-renum1,#btn-renum2").on('click', renum_msg);
 
-    load_index( function(data, dataType){
+    load_index({success: function(data, dataType){
         index_data = data;
         update_list(data)
         $(window).on('beforeunload',function(e){
@@ -15,8 +15,7 @@ $(function(){
                 return "ちょっと待ってください。";
             }
         });
-    });
-
+    }});
 });
 
 function modified() {

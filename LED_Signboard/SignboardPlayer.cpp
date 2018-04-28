@@ -42,7 +42,6 @@ bool SignboardPlayer::load_config()
   LedMat.setBright(m_bright);
   LedMat.setPlane(m_plane);
   LedMat.setLedMode(m_ledMode);
-  Serial.printf("ledMode: %d\n",m_ledMode);
   LedMat.clear();
   LedMat.display();
   return true;

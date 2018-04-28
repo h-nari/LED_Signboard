@@ -14,7 +14,9 @@
 
 static void list_script();
 static void new_script();
+static void delete_script();
 static void delete_msgs();
+static void copy_script();
 
 extern ESP8266WebServer server;
 extern SignboardPlayer player;
@@ -149,7 +151,7 @@ static void handle_file_upload()
   } else if(upload.status == UPLOAD_FILE_END){
     if(f) f.close();
     uint32_t t = upload.totalSize;
-    Serial.printf("Upload: END, Size: %ubyte %lumsec\n", t,(now - tStart)/1000);
+    Serial.printf("Upload: END, Size: %ubyte %lumsec\n", t,(now-tStart)/1000);
   }
 }
 
@@ -195,7 +197,16 @@ void webServer_init()
       
       char name[16];
       String cmd = server.arg("cmd");
+      String script_str;
+      const char *script;
 
+      if(server.hasArg("script")){
+        script_str = server.arg("script");
+        script = script_str.c_str();
+      } else{
+        script = player.getScriptDir();
+      }
+      
       Serial.printf("%s:%d cmd:%s\n",__FUNCTION__,__LINE__,cmd.c_str());
 
       if(cmd.length() < 1)
@@ -203,14 +214,14 @@ void webServer_init()
       else if(cmd == "read_config")
 	send_file("","config.jsn","text/json");
       else if(cmd == "read_index")
-	send_file(player.getScriptDir(),INDEX_FILE,"text/json;charset=UTF-8");
+	send_file( script, INDEX_FILE, "text/json;charset=UTF-8");
       else if(cmd == "read_msg"){
 	snprintf(name,sizeof name, MSG_JSN,server.arg("id").toInt());
-	send_file(player.getScriptDir(),name,"text/json;charset=UTF-8");
+	send_file( script, name, "text/json;charset=UTF-8");
       }
       else if(cmd == "read_txt"){
 	snprintf(name,sizeof name, MSG_TXT,server.arg("id").toInt());
-	send_file(player.getScriptDir(),name,"text/plain");
+	send_file( script, name, "text/plain");
       }
       else if(cmd == "font_list"){
 	String s = player.getFontListJson();
@@ -296,11 +307,18 @@ void webServer_init()
       else if(cmd == "new_script"){
 	new_script();
       }
+      else if(cmd == "delete_script"){
+        delete_script();
+      }
+      else if(cmd== "copy_script"){
+        copy_script();
+      }
       else if(cmd == "renum_msg"){
 	if(!player.renumber_msg())
 	  server.send(406,"text/plain", "renum_msg failed");
 	else
-	  send_file(player.getScriptDir(),INDEX_FILE,"text/json;charset=UTF-8");
+	  send_file(player.getScriptDir(), INDEX_FILE,
+                    "text/json;charset=UTF-8");
       }
       else 
 	server.send(406,"text/plain", "cmd not defined");
@@ -371,7 +389,7 @@ static void list_script()
 
 static void new_script()
 {
-  String name = server.arg("name");
+  String name = server.arg("script");
 
   if(name.length() < 1){
     server.send(406,"text/plain", "name parameter not found.");
@@ -389,7 +407,7 @@ static void new_script()
       f.print("{ \"msg\": [] }\n");
       f.close();
     }
-    sendOK();
+    list_script();
   }
 }
 
@@ -461,4 +479,128 @@ static void delete_msgs()
     else p = next+1;
   }
   sendOK();
+}
+
+static void delete_script()
+{
+  String script = server.arg("script");
+  if(script.length() == 0)
+    server.send(406,"text/plain", "script parameter not found");
+  else if(!SD.exists(script))
+    server.send(406,"text/plain", "script not exist");
+  else {
+    int ec = 0;
+    File dir = SD.open(script);
+    dir.rewindDirectory();
+    File f = dir.openNextFile();
+    while(f){
+      char path[40];
+      snprintf(path, sizeof path, "%s/%s", script.c_str(), f.name());
+      f.close();
+      f = dir.openNextFile();
+      Serial.printf("%s(%d) remove %s\n",__FUNCTION__,__LINE__,path);
+      if(!SD.remove(path)){
+        ec++;
+        Serial.printf("remove %s failed\n",path);
+      }
+    }
+    Serial.printf("%s(%d) rmdir %s\n",__FUNCTION__,__LINE__,script.c_str());
+    if(!ec && !SD.rmdir(script)){
+      ec++;
+      Serial.printf("rmdir %s failed\n",script.c_str());
+    }
+    dir.close();
+    if(ec)
+      server.send(500,"text/plain","delete_script failed");
+    else
+      list_script();
+  }
+}
+
+static void copy_script()
+{
+  String strSrc = server.arg("src");
+  String strDst = server.arg("dst");
+  String strDel = server.arg("delete");
+  const char *src = strSrc.c_str();
+  const char *dst = strDst.c_str();
+  int bDel = server.arg("delete").equals("true");
+
+  Serial.printf("%s(%d) src:%s dst:%s bDel:%d strDel:%s\n",
+                __FUNCTION__,__LINE__,src,dst,bDel, strDel.c_str());
+  
+  if(*src == 0)
+    server.send(406,"text/plain", "src parameter not found");
+  else if(*dst == 0)
+    server.send(406,"text/plain", "dst parameter not found");
+  else if(!SD.exists(src))
+    server.send(406,"text/plain", "src not exist");
+  else if(!SD.mkdir(dst))
+    server.send(406,"text/plain", "dst already exist");
+  else {
+    int ec = 0;
+    File dir = SD.open(src);
+    dir.rewindDirectory();
+    File f = dir.openNextFile();
+    while(f){
+      char src_path[40],dst_path[40];
+      snprintf(src_path, sizeof dst_path, "%s/%s", src, f.name());
+      snprintf(dst_path, sizeof dst_path, "%s/%s", dst, f.name());
+      Serial.printf("%s(%d) copy %s -> %s\n",__FUNCTION__,__LINE__,
+                    src_path, dst_path);
+
+      File d = SD.open(dst_path, O_WRITE | O_CREAT | O_TRUNC);
+      if(d){
+        int n,left;
+        char *p,buf[256];
+
+        while(1) {
+          left = f.readBytes(buf, sizeof buf);
+          if(left == 0) break;
+          if(left < 0){
+            Serial.printf("%s(%d) readBytes error:%d\n",
+                          __FUNCTION__,__LINE__, left);
+            ec++;
+            break;
+          }
+          p = buf;
+          while(left > 0){
+            n = d.write(p, left);
+            if(n < 0){
+              ec++;
+              Serial.printf("%s(%d) writeBytes error:%d\n",
+                            __FUNCTION__,__LINE__,n);
+              break;
+            }
+            left -= n;
+            p += n;
+          }
+        }
+        d.close();
+      } else {
+        Serial.printf("%s(%d) open %s failed\n",__FUNCTION__,__LINE__,
+                      dst_path);
+        ec++;
+      }
+      f.close();
+      f = dir.openNextFile();
+      if(bDel && !SD.remove(src_path)){
+        ec++;
+        Serial.printf("remove %s failed\n",src_path);
+      }
+    }
+
+    if(bDel){
+      Serial.printf("%s(%d) rmdir %s\n",__FUNCTION__,__LINE__, src);
+      if(!ec && !SD.rmdir(src)){
+        ec++;
+        Serial.printf("rmdir %s failed\n",src);
+      }
+    }
+    dir.close();
+    if(ec)
+      server.send(500,"text/plain","copy_script failed");
+    else
+      list_script();
+  }
 }

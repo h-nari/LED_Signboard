@@ -33,7 +33,7 @@ $(function(){
 });
 
 function modified() {
-    var d = getMsgData();
+    var d = get_msg_data();
     var cnt = 0;
     for(let k in loaded_data){
         if(loaded_data[k] != d[k]){
@@ -69,43 +69,42 @@ function getParams(){
 
 function load_msg_file()
 {
-    $.ajax({
-        type: "get",
-        url: "/api",
-        dataType: "json",
-        data: {cmd : "read_msg", id: msg_id },
-        success : function(data, dataType){
+    status("load_msg_file");
+    read_msg_file(msg_id, {
+        success: function(data, dataType){
             loaded_data = data;
-            var player = data.player;
-            $("#msg-title").val(data.title || "");
-            $("#overlay-select").val(player);
-            select_overlay();
-
-            for(var prop in data){
-                if(prop == "title" || prop == "player") continue;
-                let name1 = "#msg-" + prop;
-                let name2 = "#" + player + "-" + prop;
-                let name = name1 + "," + name2;
-                let type = $(name).prop("type");
-
-                if(type == "checkbox"){
-                    $(name).prop("checked", data[prop]);
-                } else {
-                    $(name).val(data[prop]);
-                } 
-            }
-            
+            set_msg_data(data);
             load_font_list( data.font );
-            if(player == "scroll-text"){
+            if(data.player == "scroll-text"){
                 load_txt_file();
             }
-            
-        },
-        error: function(XMLHttpRequest, textStatus, e){
-            console.log("error:" + textStatus + ":" + e.message);
-        },
+            status("load_msg_file successed");
+        }
     });
 }
+
+function set_msg_data(data)
+{
+    var player = data.player;
+    $("#msg-title").val(data.title || "");
+    $("#overlay-select").val(player);
+    select_overlay();
+
+    for(var prop in data){
+        if(prop == "title" || prop == "player") continue;
+        let name1 = "#msg-" + prop;
+        let name2 = "#" + player + "-" + prop;
+        let name = name1 + "," + name2;
+        let type = $(name).prop("type");
+
+        if(type == "checkbox"){
+            $(name).prop("checked", data[prop]);
+        } else {
+            $(name).val(data[prop]);
+        } 
+    }
+}        
+
 
 function load_txt_file()
 {
@@ -142,7 +141,7 @@ function select_overlay(){
     }
 }
 
-function getMsgData()
+function get_msg_data()
 {
     var id = $("#msg-id").val();
     var player = $("#overlay-select").val();
@@ -175,7 +174,7 @@ function getMsgData()
     
 function writeMsg()
 {
-    var d = getMsgData();
+    var d = get_msg_data();
     loaded_data = d;
     
     upload_file(msg_id, 'msg', d);
@@ -249,7 +248,7 @@ function edit_next_msg( delta )
         writeMsg();
     }
     
-    load_index(function(data, dataType){
+    load_index({success: function(data, dataType){
         for(let i=0; i< data.msg.length; i++){
             var m = data.msg[i];
             if(m.id == msg_id){
@@ -267,7 +266,7 @@ function edit_next_msg( delta )
             }
         }
         alert("MSG" + msg_id + "が見つかりません");
-    });
+    }});
 }
 
 
@@ -291,12 +290,12 @@ function new_msg()
         writeMsg();
     }
     
-    load_index(function(data, dataType){
+    load_index({success:function(data, dataType){
         var id = 0;
         for(let m of data.msg)
             id = Math.max(id, m.id);
         id++;
         make_new_msg(data, id);
         location.href = "/edit?id=" + id; 
-    });
+    }});
 }

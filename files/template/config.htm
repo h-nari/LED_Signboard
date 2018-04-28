@@ -127,7 +127,22 @@
 	    <option>スクリプト</option>
 	  </select>
         </span>
-	<button class="btn" id="btn-new-script">新規</button>
+        <div class="btn-group">
+          <button type="button" class="btn dropdown-toggle"
+                  data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+            スクリプト操作
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a id="menu-script-new">新規作成</a></li>
+            <li><a id="menu-script-delete">削除</a></li>
+            <li><a id="menu-script-copy">コピー</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a id="menu-script-upload">アップロード</a></li>
+            <li><a id="menu-script-download">ダウンロード</a></li>
+          </ul>
+        </div>
       </div>
 
       <div class="form-group">
@@ -149,22 +164,57 @@
 
       <div class="form-group" class="part-block">
         <div class="col-xs-offset-2 col-xs-10">
-          <button type="button" id="btn-write" class="btn btn-primary">書込</button>
+          <button type="button" id="btn-write" class="btn btn-primary">
+            書込</button>
         </div>
       </div>
     </form>
     <div id="new-script-dialog" title="新規スクリプト" style="display:none;">
-    <form>
-      <fieldset>
-	<label for="name">スクリプト名:</label>
-	<input type="text" name="name" placeholder="スクリプト名を入力"
-	       id="config-script-name"
-	       class="text ui-widget-content ui-cornaer-all">
-      </fieldset>
-    </form>
-  </div>
-  <script src="/confPage.js">
-  </script>  
+      <form>
+        <fieldset>
+	  <label for="name">スクリプト名:</label>
+	  <input type="text" name="name" placeholder="スクリプト名を入力"
+	         id="config-script-name"
+	         class="text ui-widget-content ui-cornaer-all">
+        </fieldset>
+      </form>
+    </div>
+    <div id="copy-script-dialog" title="スクリプト・コピー"
+         style="display:none;">
+      <form>
+        <div>
+	  <label  for="src" class="control-label">コピー元スクリプト:</label>
+	  <select id="copy-script-src" name="src" class="form-control">
+	    <option>コピー元スクリプト</option>
+	  </select>
+        </div>
+        <div>
+          <label for="dst" class="control-label">コピー先スクリプト名</label>
+          <input type="text" name="name" placeholder="コピー先スクリプト名"
+	         id="copy-script-dst"
+	         class="form-control">
+        </div>
+      </form>
+    </div>
+    <div id="script-upload-dialog" title="スクリプト・アップロード"
+         style="display:none;">
+      <form>
+        <fieldset>
+          <div>
+            アップロードするスクリプトのzipファイルを<br/>
+            選択して下さい。
+          </div>
+	  <input type="file" name="file" 
+	         id="config-upload-file" accept=".zip"
+	         class="text ui-widget-content ui-cornaer-all">
+        </fieldset>
+      </form>
+      <div id="script-upload-message">
+      </div>
+    </div>
+  <script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
+  <script src="/confPage.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="/common.js"></script>

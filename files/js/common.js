@@ -97,6 +97,41 @@ function upload_file(id, type, obj, callback = null){
     });
 }
 
+function upload_file2(filename, obj, opt){
+    var blob;
+    
+    if(obj instanceof Blob){
+        blob = obj;
+    } else if( 'string' == typeof obj ) {
+        blob  = new Blob([obj],{type: 'application/octet-binary'});
+    } else {
+        blob = new Blob([JSON.stringify(obj,null,' ')],
+                        {type: 'application/json'});
+    }
+    var formData = new FormData();
+    formData.append("upload", blob, filename);
+    
+    var ajaxObj = {
+        type: "post",
+        url: "/upload_file",
+        dataType: "text",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        error: function(xhr, t, e){
+            status("upload_file2 failed:" + t + ":" + e.message, true);
+        }
+    };
+
+    for(let k in opt){
+        ajaxObj[k] = opt[k];
+    }
+
+    $.ajax(ajaxObj);
+}
+
+
 function device_control(cmd)
 {
     var data;
@@ -145,21 +180,29 @@ function disp_msg(id)
     });
 }
 
-function load_index(callback = null) {
-    $.ajax({
+function load_index(opt) {
+    var ajaxObj = {
         type: "get",
         url: "/api",
         dataType: "json",
         data: { cmd : "read_index" },
-        success: function(data, dataType){
-            if(callback){
-                callback(data, dataType);
-            }
-        },
-        error: function(xhr, status, errorThrown){
+        error: function(xhr, status, error){
             console.log(status + ':' + xhr.responseText);
         }
-    });
+    };
+
+    for(let prop in opt){
+        if(prop == "script")
+            ajaxObj.data.script = opt.script;
+        else if(prop == "dataType")
+            ajaxObj.dataType = opt.dataType;
+        else if(prop == "success" || prop == "error")
+            ajaxObj[prop] = opt[prop];
+        else
+            throw new Error("Bad option:" + prop); 
+    }
+    
+    $.ajax(ajaxObj);
 }
 
 
@@ -181,3 +224,51 @@ function make_new_msg(index, id)
         text: "MSG" + id,
     });
 }
+
+function read_msg_file(id, opt)
+{
+    var ajaxObj = {
+        type: "get",
+        url: "/api",
+        dataType: "json",
+        data: {cmd : "read_msg", id:id },
+        success : function(data, dataType){
+            console.log("read_msg_file succeeded");
+        },
+        error: function(xhr, text, e){
+            console.log("read_msg_file failedr:" + text + ":"
+                        + xhr.responseText);
+        }
+    };
+
+    for(let key in opt){
+        if(key == "type")
+            ajaxObj.data.cmd = "read_" + opt.type;
+        else if(key == "script")
+            ajaxObj.data.script = opt.script;
+        else
+            ajaxObj[key] = opt[key];
+    }
+    $.ajax(ajaxObj);
+}
+
+function msg_name (id) {
+    return "msg" + ("00" + id).slice(-2);
+}
+
+function new_script(new_name, opt = {}){
+    var ajaxObj = {
+        url: "/api",
+        type: "GET",
+        data: {cmd : "new_script", script: new_name},
+        dataType: "json",
+        error: function(xhr, text, e){
+            console.log(text + ":" + xhr.responseText);
+        }
+    };
+    for(let key in opt){
+        ajaxObj[key] = opt[key];
+    }
+    $.ajax(ajaxObj);
+}
+
