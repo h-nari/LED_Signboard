@@ -91,8 +91,9 @@ function upload_file(id, type, obj, callback = null){
                 callback(data, dataType);
             }
         },
-        error: function(xhr, textStatus, e){
-            status("upload_file failed:" + textStatus + ":" + e.message, true);
+        error: function(xhr, text, e){
+            status("upload_file failed:" + text + ":" +
+                   xhr.responseText, true);
         },
     });
 }
@@ -242,8 +243,8 @@ function read_msg_file(id, opt)
     };
 
     for(let key in opt){
-        if(key == "type")
-            ajaxObj.data.cmd = "read_" + opt.type;
+        if(key == "fileType")
+            ajaxObj.data.cmd = "read_" + opt.fileType;
         else if(key == "script")
             ajaxObj.data.script = opt.script;
         else

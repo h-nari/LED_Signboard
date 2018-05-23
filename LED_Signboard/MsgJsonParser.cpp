@@ -1,9 +1,11 @@
 #include "MsgJsonParser.h"
 #include "StaticTextPlayer.h"
 #include "ScrollTextPlayer.h"
+#include "BitmapPlayer.h"
 
 StaticTextPlayer staticTextPlayer;
 ScrollTextPlayer scrollTextPlayer;
+BitmapPlayer     bitmapPlayer;
 
 MsgJsonParser::MsgJsonParser() : JsonParser()
 {
@@ -73,6 +75,8 @@ bool MsgJsonParser::handleValue(json_value_t *value)
       m_player = &staticTextPlayer;
     else if(strcmp(value->sVal,"scroll-text")==0)
       m_player = &scrollTextPlayer;
+    else if(strcmp(value->sVal,"bitmap")==0)
+      m_player = &bitmapPlayer;
     else
       return error("player:%s not defined",value->sVal);
     m_player->resetParser(this);

@@ -235,7 +235,7 @@ function download_script(){
                             status("download " + name + ".txt");
                             read_msg_file(msg.id, {
                                 script: script,
-                                type: "txt",
+                                fileType: "txt",
                                 dataType: "text",
                                 success: function(data,dataType){
                                     folder.file(name + ".txt",data);
@@ -246,6 +246,19 @@ function download_script(){
                                            + "\n" + e.responseText );
                                 }
                             });
+                        }
+                        else if(data.player == 'bitmap'){
+                            status("download " + name + ".bmp");
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('GET','/api?cmd=read_bmp&id='
+                                     + msg.id, true);
+                            xhr.responseType = 'arraybuffer';
+                            xhr.onload = function(e){
+                                var ab = this.response;
+                                folder.file(name + '.bmp', ab);
+                                obj.download_msgs();
+                            };
+                            xhr.send();
                         }
                         else {
                             obj.download_msgs();
@@ -326,9 +339,13 @@ function upload_script(){
         while(f && f.file.dir)
             f = files.shift();
         if(f){
-            f.file.async("string").then(function(str){
+            var dataType = "string";
+            if(f.file.name.endsWith(".bmp"))
+                dataType = "blob";
+
+            f.file.async(dataType).then(function(d){
                 status("upload " + f.path);
-                upload_file2( f.path, str, {
+                upload_file2( f.path, d, {
                     success: function(data,dataType){
                         write_file();
                     }

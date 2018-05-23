@@ -111,7 +111,7 @@ void loop(void){
 
 	LedMat.checkSubcon();
   server.handleClient();
-	player.update();
+  player.update();
 
 	// heap_check();
 }

@@ -130,6 +130,11 @@ static void handle_file_upload()
       path = player.getScriptDir();
       path += "/";
       path += name;
+    } else if(server.uri() == "/upload_bmp"){
+      snprintf(name,sizeof name, MSG_BMP, upload.filename.toInt());
+      path = player.getScriptDir();
+      path += "/";
+      path += name;
     } else if(server.uri() == "/upload_file"){
       path += player.getScriptDir();
       path += "/";
@@ -189,6 +194,8 @@ void webServer_init()
 	    [](){sendOK();}, handle_file_upload);
   server.on("/upload_txt", HTTP_POST,
 	    [](){sendOK();}, handle_file_upload);
+  server.on("/upload_bmp", HTTP_POST,
+	    [](){sendOK();}, handle_file_upload);
   server.on("/upload_file", HTTP_POST,
 	    [](){sendOK();}, handle_file_upload);
 
@@ -222,6 +229,10 @@ void webServer_init()
       else if(cmd == "read_txt"){
 	snprintf(name,sizeof name, MSG_TXT,server.arg("id").toInt());
 	send_file( script, name, "text/plain");
+      }
+      else if(cmd == "read_bmp"){
+	snprintf(name,sizeof name, MSG_BMP,server.arg("id").toInt());
+	send_file( script, name, "image/bitmap");
       }
       else if(cmd == "font_list"){
 	String s = player.getFontListJson();

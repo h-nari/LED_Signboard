@@ -13,6 +13,7 @@
 #define MSG_FILE        "MSG%02d"
 #define MSG_JSN		"MSG%02d.JSN"
 #define MSG_TXT		"MSG%02d.TXT"
+#define MSG_BMP		"MSG%02d.BMP"
 #define MSG_PATH_PAT    "%s/MSG%02d.%s"
 #define TMP_FILE_HEADER "TMP"
 #define TMP_PATH_PAT    "%s/TMP%02d.%s"

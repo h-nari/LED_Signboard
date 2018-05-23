@@ -15,6 +15,9 @@ $(function(){
     $("#btn-next-msg").on("click", function(){ edit_next_msg( 1);});
     $("#btn-title-set").on("click", titleSet);
     $("#btn-new-msg").on("click", new_msg);
+    $("#btn-bitmap-file").on("change", bitmap_file);
+    $("#bitmap-scrollType").on("change", onScrollTypeChange);
+    $("#msg-bitmap").on("load", msg_bitmap_onload);
     select_overlay();
     var params = getParams();
 
@@ -22,6 +25,7 @@ $(function(){
         msg_id = params.id[0];
         $("#msg-id").val(msg_id);
         load_msg_file();
+        onScrollTypeChange();
     }
 
     $(window).on('beforeunload',function(e){
@@ -78,6 +82,13 @@ function load_msg_file()
             if(data.player == "scroll-text"){
                 load_txt_file();
             }
+            if(data.player == "bitmap"){
+                // var s = "<img src='/api?cmd=read_bmp&id=";
+                // s += msg_id + "'>";
+                // $("#canvas-container").html(s);
+                var img = $("#msg-bitmap")[0];
+                img.src = "/api?cmd=read_bmp&id=" + msg_id;
+            }
             status("load_msg_file successed");
         }
     });
@@ -131,6 +142,7 @@ function load_txt_file()
     });
 }
 
+
 function select_overlay(){
     var opt = $("#overlay-select option:selected");
     var target = opt.attr("target");
@@ -163,11 +175,13 @@ function get_msg_data()
                   part + " select");
     var prefix_len = player.length + 1;
     for(let item of items){
-        let name = item.id.substring(prefix_len);
-        if(item.tagName == "INPUT" && $(item).prop("type") == "checkbox")
-            d[name] = $(item).prop("checked");
-        else
-            d[name] = $(item).val();
+        if(item.id.startsWith(player + "-")){
+            let name = item.id.substring(prefix_len);
+            if(item.tagName == "INPUT" && $(item).prop("type") == "checkbox")
+                d[name] = $(item).prop("checked");
+            else
+                d[name] = $(item).val();
+        }
     }
     return d;
 }
@@ -181,6 +195,9 @@ function writeMsg()
     if( d.player == "scroll-text"){
         loaded_text = $("#scroll-text-text").val();
         upload_file(msg_id, 'txt', loaded_text);
+    }
+    else if( d.player == "bitmap"){
+        upload_bmp();
     }
 
     update_index(msg_id, d.player, $("#msg-title").val());
@@ -298,4 +315,91 @@ function new_msg()
         make_new_msg(data, id);
         location.href = "/edit?id=" + id; 
     }});
+}
+
+function bitmap_file()	// 画像ファイル・変更時
+{
+    console.log("bitmap_file");
+    var f = $("#btn-bitmap-file")[0];
+    if(f.files.length > 0){
+        var file = f.files[0];
+        var img = $("#msg-bitmap")[0];
+        img.src = URL.createObjectURL(file);
+        
+        // var img = new Image();
+        // img.src = URL.createObjectURL(file);
+        // img.onload = function(){
+        //     var w = img.width;
+        //     var h = img.height;
+        //     var s = "<canvas id='canvas'";
+        //     s += " width='" + w  + "' height='" + h;
+        //     s += "'>";
+        //     $("#canvas-container").html(s);
+        //     var canvas = $("#canvas")[0];
+        //     var ctx = canvas.getContext('2d');
+        //     ctx.drawImage(img,0,0);
+        // }
+    }
+}
+
+function upload_bmp()
+{
+    var canvas = $("#canvas")[0];
+    if(canvas){
+        var w = canvas.width;
+        var h = canvas.height;
+        var ctx = canvas.getContext('2d');
+        var im = ctx.getImageData(0,0,w,h);
+        var buf = new ArrayBuffer(im.data.length + 14 + 40);
+
+        var dv = new DataView(buf);
+        dv.setUint8(  0, "B".charCodeAt(0));
+        dv.setUint8(  1, "M".charCodeAt(0));
+        dv.setUint32( 2, buf.byteLength, true);
+        dv.setUint16( 6, 0, true);
+        dv.setUint16( 8, 0, true);
+        dv.setUint32(10, 14 + 40, true);
+
+        dv.setUint32(14, 40, true);
+        dv.setUint32(18,  w, true);
+        dv.setUint32(22, -h, true);
+        dv.setUint16(26,  1, true);
+        dv.setUint16(28, 24, true);
+        dv.setUint32(30,  0, true);
+        dv.setUint32(34,  im.data.length, true);
+        dv.setUint32(38,  255, true);
+        dv.setUint32(42,  255, true);
+        dv.setUint32(46,  0, true);
+        dv.setUint32(50,  0, true);
+
+        var wp = 54
+        for(let i=0; i<im.data.length; i+=4){
+            dv.setUint8(wp++, im.data[i+2]);
+            dv.setUint8(wp++, im.data[i+1]);
+            dv.setUint8(wp++, im.data[i]);
+        }
+        var blob = new Blob([buf], { type: "image/bmp"}); 
+        
+        status("upload bmp");
+        upload_file(msg_id, "bmp", blob, 
+                    function(data,dataType){
+                        status("upload bmp succeeded");
+                    });
+    }
+}
+
+function onScrollTypeChange()
+{
+    var st = $("#bitmap-scrollType").val();
+    var readonly = st == 0;
+    for(let n of ['scrollout', 'speedX', 'speedY']){
+        $("#bitmap-" + n ).prop("readonly", readonly);
+    }
+}
+
+function msg_bitmap_onload(e){
+    var img = e.target;
+    $("#msg-bitmap-info").html(
+        "画像幅:" + img.width + " 画像高さ:" + img.height
+    );
 }

@@ -22,6 +22,11 @@ body > p {
   top: 8px;
 }
 
+.unit {
+  position: relative;
+  top: 8px;
+}
+
 #nav {
   color: white;
   background-color: #f0f0f0;
@@ -30,7 +35,10 @@ body > p {
 }
 
 #status {
-  color: #ccc;
+    color: #ccc;
+    width: 150px;
+    overflow-x: hidden;
+    white-space: nowrap;
 }
 
 td.col-id input {
@@ -52,4 +60,10 @@ table.msg_list > tbody > tr > td {
 
 #copy-script-dialog  label {
     margin-top: 30px;
+}
+
+#canvas-container {
+    height: 100px;
+    overflow-x: auto;
+    overflow-y: auto;
 }
