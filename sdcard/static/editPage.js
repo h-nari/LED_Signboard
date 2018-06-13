@@ -17,7 +17,9 @@ $(function(){
     $("#btn-new-msg").on("click", new_msg);
     $("#btn-bitmap-file").on("change", bitmap_file);
     $("#bitmap-scrollType").on("change", onScrollTypeChange);
+    $("#movie-partial").on("change", onMoviePartialChange);
     $("#msg-bitmap").on("load", msg_bitmap_onload);
+    $("#movie-file").on("change", show_movie_info2);
     select_overlay();
     var params = getParams();
 
@@ -80,14 +82,14 @@ function load_msg_file()
             set_msg_data(data);
             load_font_list( data.font );
             if(data.player == "scroll-text"){
-                load_txt_file();
+                load_txt_file(data.file);
             }
-            if(data.player == "bitmap"){
-                // var s = "<img src='/api?cmd=read_bmp&id=";
-                // s += msg_id + "'>";
-                // $("#canvas-container").html(s);
+            else if(data.player == "bitmap"){
                 var img = $("#msg-bitmap")[0];
                 img.src = "/api?cmd=read_bmp&id=" + msg_id;
+            }
+            else if(data.player == "movie"){
+                load_movie_list(data.file);
             }
             status("load_msg_file successed");
         }
@@ -402,4 +404,57 @@ function msg_bitmap_onload(e){
     $("#msg-bitmap-info").html(
         "画像幅:" + img.width + " 画像高さ:" + img.height
     );
+}
+
+function load_movie_list(val = null){
+    $.ajax({
+        type: "get", url: "/api", data: {cmd: "movie_list"},
+        dataType: "json",
+        success: function(data, dataType){
+            var s = "";
+            for(let m of data){
+                s += "<option value='" + m.name + "'";
+                s += " frames=" + m.frames;
+                s += " num=" + m.num;
+                s += " deno=" + m.deno;
+                if(val == m.name)
+                    s += " selected";
+                s += ">";
+                s += m.name;
+                s += "</option>\n";
+            }
+            $("#movie-file").html(s);
+            show_movie_info2();
+        },
+        error: function(xhr, text, e){
+            status("load_movie_list failed*" + text + xhr.responseText);
+        }
+    });
+}
+
+function onMoviePartialChange()
+{
+    var bPartial = $("#movie-partial").prop("checked");
+    for(let n of ['start', 'end']){
+        $("#movie-" + n ).prop("readonly", !bPartial);
+    }
+}
+
+function show_movie_info2()
+{
+    // var a = e.target.selectedOptions[0].attributes;
+    var s = "";
+    var select = $("#movie-file")[0];
+    if(select && select.selectedOptions[0]){
+        var a = select.selectedOptions[0].attributes;
+        var frames = parseInt(a.frames.value);
+        var num    = parseInt(a.num.value);
+        var deno   = parseInt(a.deno.value);
+
+        var fps = Math.round(100 *num / deno) / 100;
+        var time = Math.round(10*frames / fps) / 10;
+        s += "<span class='col-xs-2'>time: " + time + " 秒</span>";
+        s += "<span class='col-xs-2'>" + fps + "fps</span>";
+    } 
+    $("#video-info").html(s);
 }

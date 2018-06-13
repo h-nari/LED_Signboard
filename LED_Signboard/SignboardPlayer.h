@@ -18,6 +18,8 @@
 #define TMP_FILE_HEADER "TMP"
 #define TMP_PATH_PAT    "%s/TMP%02d.%s"
 
+#define MOVIE_DIR	"/MOVIE"
+
 #define MsgMax  50
 #define FontMax 10
 

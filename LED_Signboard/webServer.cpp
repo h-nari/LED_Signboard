@@ -1,6 +1,7 @@
 #include "conf.h"
 #include "webServer.h"
 #include <Humblesoft_LedMat.h>
+#include <MoviePlayer.h>
 #include <ESP8266WebServer.h>
 #include <SPI.h>
 #include <SD.h>
@@ -17,6 +18,7 @@ static void new_script();
 static void delete_script();
 static void delete_msgs();
 static void copy_script();
+static void movie_list();
 
 extern ESP8266WebServer server;
 extern SignboardPlayer player;
@@ -309,21 +311,11 @@ void webServer_init()
 	delay(500);
 	ESP.restart();
       }
-      else if(cmd == "delete_msg"){
-	delete_msgs();
-      }
-      else if(cmd == "list_script"){
-	list_script();
-      }
-      else if(cmd == "new_script"){
-	new_script();
-      }
-      else if(cmd == "delete_script"){
-        delete_script();
-      }
-      else if(cmd== "copy_script"){
-        copy_script();
-      }
+      else if(cmd == "delete_msg")	delete_msgs();
+      else if(cmd == "list_script")	list_script();
+      else if(cmd == "new_script")	new_script();
+      else if(cmd == "delete_script")   delete_script();
+      else if(cmd == "copy_script")     copy_script();
       else if(cmd == "renum_msg"){
 	if(!player.renumber_msg())
 	  server.send(406,"text/plain", "renum_msg failed");
@@ -331,8 +323,8 @@ void webServer_init()
 	  send_file(player.getScriptDir(), INDEX_FILE,
                     "text/json;charset=UTF-8");
       }
-      else 
-	server.send(406,"text/plain", "cmd not defined");
+      else if(cmd == "movie_list")      movie_list();
+      else server.send(406,"text/plain", "cmd not defined");
     });
 
   server.onNotFound([]{
@@ -615,3 +607,48 @@ static void copy_script()
       list_script();
   }
 }
+
+#define MovieDir "/movie"
+
+void movie_list()
+{
+  File dir = SD.open(MovieDir);
+  if(!dir){
+    server.send(406,"movie dir not found");
+    return;
+  } 
+
+  File f = dir.openNextFile();
+  String s = "[\n";
+  while(f){
+    MoviePlayer mp;
+    char path[40];
+    snprintf(path, sizeof path, "%s/%s", MovieDir, f.name());
+
+    if(mp.begin(path)){
+      hlm3_header_t *h = mp.header();
+      s += " { \"name\":\"";
+      s += f.name();
+      s += "\", \"frames\":";
+      s += h->frames;
+      s += ", \"num\":";
+      s += h->fps_numerator;
+      s += ", \"deno\":";
+      s += h->fps_denominator;
+      s += '}';
+      f = dir.openNextFile();
+      if(f) s += ",";
+      s += '\n';
+      mp.close();
+    }
+    else
+      f = dir.openNextFile();
+  }
+  s += "]";
+
+  server.send(200, "text/json", s);
+}
+
+
+
+  
