@@ -1,3 +1,5 @@
+#define USE_NETWORK 1   // 0:networkを使用しない, 1:networkを使用する
+#if USE_NETWORK
 #define USE_FIX_IP 0	// 固定IPを使用
 #define USE_AUTH 0	// アクセスするのにユーザ名/パスワードが必要になる
 #define USE_SDFS 0	// SDカードの内容の参照・アップロード等を
@@ -23,3 +25,6 @@
 #define OTA_PASSWORD 	"led_signboard"
 #define OTA_PORT	8266
 #endif
+
+#endif /* USE_NETWORK */
+

@@ -3,13 +3,24 @@
 #include "conf.h"
 
 #include <Arduino.h>
+#if USE_NETWORK
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
+#include "ota_util.h"
+
+#define FS_NO_GLOBALS
+#include <FS.h>
+#include "FsHandler.h"
+#include "SpiffsHandler.h"
+#include "SdHandler.h"
+
+#include "webServer.h"
+#endif
+
 #include <stdlib.h>
 #include <time.h>
-#include "ota_util.h"
 
 #include <SPI.h>
 #include <SD.h>
@@ -18,14 +29,7 @@
 #include <Humblesoft_GFX.h>
 #include <Humblesoft_LedMat.h>
 
-#define FS_NO_GLOBALS
-#include <FS.h>
-#include "FsHandler.h"
-#include "SpiffsHandler.h"
-#include "SdHandler.h"
-
 #include "SignboardPlayer.h"
-#include "webServer.h"
 
 #include <fontx/ILGH16XB.h>
 #include <fontx/ILGZ16XB.h>
@@ -35,8 +39,13 @@ RomFontx fontx(ILGH16XB,ILGZ16XB);
 
 uint8_t imgBuf[16*1024];
 
+#if USE_NETWORK
 ESP8266WebServer server(80);
+#endif
 SignboardPlayer player;
+#if USE_NETWORK
+bool bNetwork = true;
+#endif
 
 void setup(void){
   Serial.begin(115200);
@@ -58,6 +67,7 @@ void setup(void){
 	LedMat.println("SIGNBOARD");
 	LedMat.display();
 	
+#if USE_NETWORK
 	WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
@@ -68,9 +78,8 @@ void setup(void){
 			Serial.printf("\nStatus:%d\n", WiFi.status());
 			tStart = now;
 			WiFi.disconnect();
-			// ESP.restart();
-			delay(1000);
-			WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+      bNetwork = false;
+      break;
 		}
 		else {
 			delay(500);
@@ -79,40 +88,50 @@ void setup(void){
   }
   Serial.println();
 
+  if(bNetwork){
 #if USE_FIX_IP
-	WiFi.config(IP_ADDR, GATEWAY, NETMASK, DNS_SERVER);
+    WiFi.config(IP_ADDR, GATEWAY, NETMASK, DNS_SERVER);
 #endif
-	Serial.print("IP ADDRESS:  ");
-  Serial.println(WiFi.localIP());
-	uint8_t mac[6];
-	WiFi.macAddress(mac);
-	Serial.print("MAC ADDRESS:");
-	for(int i=0; i<6; i++)
+    Serial.print("IP ADDRESS:  ");
+    Serial.println(WiFi.localIP());
+    uint8_t mac[6];
+    WiFi.macAddress(mac);
+    Serial.print("MAC ADDRESS:");
+    for(int i=0; i<6; i++)
 		Serial.printf("%c%02x",i>0 ?'-':' ',mac[i]);
-	Serial.println();
+    Serial.println();
 
-	configTime( JST, 0, "ntp.nict.jp", "ntp.jst.mfeed.ad.jp");
-	webServer_init();
-  server.begin();
-  Serial.println("HTTP server started");
+    configTime( JST, 0, "ntp.nict.jp", "ntp.jst.mfeed.ad.jp");
+    webServer_init();
+    server.begin();
+    Serial.println("HTTP server started");
 
 #if USE_OTA
-	ota_init();
+    ota_init();
 #endif
-
+  } else {
+    Serial.println("network is not available");
+  }
+#else
+  Serial.println("no network is used");
+#endif
+  
 	LedMat.clear();
 	LedMat.display();
 }
 
 void loop(void){
-#if USE_OTA
-  ArduinoOTA.handle();
-#endif
-
 	LedMat.checkSubcon();
-  server.handleClient();
   player.update();
 
+#if USE_NETWORK
+  if(bNetwork){
+#if USE_OTA
+    ArduinoOTA.handle();
+#endif
+    server.handleClient();
+  }
+#endif
 	// heap_check();
 }
 
