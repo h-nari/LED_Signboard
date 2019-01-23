@@ -112,9 +112,9 @@ void setup(void){
   } else {
     Serial.println("network is not available");
   }
-#else
+#else  // USE_NETWORK
   Serial.println("no network is used");
-#endif
+#endif // USE_NETWORK
   
 	LedMat.clear();
 	LedMat.display();
