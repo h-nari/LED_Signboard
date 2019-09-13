@@ -145,7 +145,7 @@ static void handle_file_upload()
     else return;
     
     Serial.printf("%s path:%s\n",server.uri().c_str(),path.c_str());
-    f = SD.open(path, FILE_WRITE | O_TRUNC);
+    f = SD.open(path, FILE_WRITE);
     if(!f) Serial.printf("open %s failed.\n", path.c_str());
     tStart = tUpdated = now;
   } else if(upload.status == UPLOAD_FILE_WRITE){
@@ -552,7 +552,7 @@ static void copy_script()
       Serial.printf("%s(%d) copy %s -> %s\n",__FUNCTION__,__LINE__,
                     src_path, dst_path);
 
-      File d = SD.open(dst_path, O_WRITE | O_CREAT | O_TRUNC);
+      File d = SD.open(dst_path, FILE_WRITE);
       if(d){
         int n,left;
         char *p,buf[256];
