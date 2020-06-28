@@ -4,6 +4,8 @@
 #include "Humblesoft_LedMat.h"
 #include "MsgJsonParser.h"
 
+#pragma GCC diagnostic ignored "-Winvalid-offsetof"
+
 class MsgPlayer  {
  public:
   struct ParaTbl {

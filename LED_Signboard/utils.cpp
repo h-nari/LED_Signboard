@@ -22,7 +22,7 @@ bool fileCopy(const char *src, const char *dst)
   File ifp = SD.open(src, FILE_READ);
   if(!ifp) return error("%s not found", src);
 
-  File ofp = SD.open(dst, O_WRITE|O_CREAT|O_TRUNC);
+  File ofp = SD.open(dst, sdfat::O_WRITE|sdfat::O_CREAT|sdfat::O_TRUNC);
   if(!ofp) return error("open %s failed", dst);
 
 

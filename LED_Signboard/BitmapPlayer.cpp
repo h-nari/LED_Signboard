@@ -149,13 +149,13 @@ bool BitmapPlayer::bmp_read(const char *path)
   bitmapFileHeader_t bfh;
   bitmapInfoHeader_t bih;
 
-  n = m_file.read((char *)&bfh, sizeof bfh);
+  n = m_file.read((uint8_t *)&bfh, sizeof bfh);
   if(n < 0){
     m_file.close();
     return error("read bfh failed");
   }
 
-  n = m_file.read((char *)&bih, sizeof bih);
+  n = m_file.read((uint8_t *)&bih, sizeof bih);
   if(n < 0) {
     m_file.close();
     return error("read bih failed");
@@ -204,7 +204,7 @@ bool BitmapPlayer::bmp_get_pixel(int x, int y,
     return false;
   }
   uint8_t bgr[3];
-  int n = m_file.read((char *)bgr, 3);
+  int n = m_file.read(bgr, 3);
   if(n < 3) return false;
   *rp = bgr[2];
   *gp = bgr[1];

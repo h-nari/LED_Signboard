@@ -12,9 +12,9 @@
 
 #define FS_NO_GLOBALS
 #include <FS.h>
-#include "FsHandler.h"
-#include "SpiffsHandler.h"
-#include "SdHandler.h"
+#include <FsHandler.h>
+#include <SpiffsHandler.h>
+#include <SdHandler.h> 
 
 #include "webServer.h"
 #endif
@@ -34,8 +34,6 @@
 #include <fontx/ILGH16XB.h>
 #include <fontx/ILGZ16XB.h>
 RomFontx fontx(ILGH16XB,ILGZ16XB);
-
-#define JST 3600*9
 
 uint8_t imgBuf[16*1024];
 
@@ -101,7 +99,7 @@ void setup(void){
 		Serial.printf("%c%02x",i>0 ?'-':' ',mac[i]);
     Serial.println();
 
-    configTime( JST, 0, "ntp.nict.jp", "ntp.jst.mfeed.ad.jp");
+    configTzTime( "JST-9", "ntp.nict.jp", "ntp.jst.mfeed.ad.jp");
     webServer_init();
     server.begin();
     Serial.println("HTTP server started");
