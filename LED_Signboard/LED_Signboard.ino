@@ -35,8 +35,6 @@
 #include <fontx/ILGZ16XB.h>
 RomFontx fontx(ILGH16XB,ILGZ16XB);
 
-#define JST 3600*9
-
 uint8_t imgBuf[16*1024];
 
 #if USE_NETWORK
@@ -101,7 +99,7 @@ void setup(void){
 		Serial.printf("%c%02x",i>0 ?'-':' ',mac[i]);
     Serial.println();
 
-    configTime( JST, 0, "ntp.nict.jp", "ntp.jst.mfeed.ad.jp");
+    configTzTime( "JST-9", "ntp.nict.jp", "ntp.jst.mfeed.ad.jp");
     webServer_init();
     server.begin();
     Serial.println("HTTP server started");
@@ -112,9 +110,9 @@ void setup(void){
   } else {
     Serial.println("network is not available");
   }
-#else
+#else  // USE_NETWORK
   Serial.println("no network is used");
-#endif
+#endif // USE_NETWORK
   
 	LedMat.clear();
 	LedMat.display();

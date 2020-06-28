@@ -79,6 +79,7 @@ static void sendOK()
 static void send_file(const char *header,const char *name,
 		      const char *content_type, bool ignoreNotFound = false)
 {
+
   if(!auth_check()) return;
   if(!browser_check()) return;
   
@@ -86,6 +87,7 @@ static void send_file(const char *header,const char *name,
   String mes;
   snprintf(path,sizeof path,"%s/%s",header,name);
   
+  Serial.printf("%s:%d %s\n",__FUNCTION__,__LINE__,path);
   File f = SD.open(path);
   if(!f) {
     if(ignoreNotFound)
@@ -96,7 +98,9 @@ static void send_file(const char *header,const char *name,
       server.send(406,"text/plain", mes);
     }
   } else {
+    Serial.printf("%s:%d\n",__FUNCTION__,__LINE__);
     server.streamFile(f, content_type);
+    Serial.printf("%s:%d\n",__FUNCTION__,__LINE__);
     f.close();
   }
 }
@@ -145,7 +149,11 @@ static void handle_file_upload()
     else return;
     
     Serial.printf("%s path:%s\n",server.uri().c_str(),path.c_str());
+<<<<<<< HEAD
     f = SD.open(path, FILE_WRITE);
+=======
+    f = SD.open(path, sdfat::O_WRITE| sdfat::O_CREAT| sdfat::O_TRUNC);
+>>>>>>> t190123
     if(!f) Serial.printf("open %s failed.\n", path.c_str());
     tStart = tUpdated = now;
   } else if(upload.status == UPLOAD_FILE_WRITE){
@@ -552,7 +560,7 @@ static void copy_script()
       Serial.printf("%s(%d) copy %s -> %s\n",__FUNCTION__,__LINE__,
                     src_path, dst_path);
 
-      File d = SD.open(dst_path, FILE_WRITE);
+      File d = SD.open(dst_path, sdfat::O_WRITE | sdfat::O_CREAT | sdfat::O_TRUNC);
       if(d){
         int n,left;
         char *p,buf[256];
