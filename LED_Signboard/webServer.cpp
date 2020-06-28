@@ -149,11 +149,7 @@ static void handle_file_upload()
     else return;
     
     Serial.printf("%s path:%s\n",server.uri().c_str(),path.c_str());
-<<<<<<< HEAD
-    f = SD.open(path, FILE_WRITE);
-=======
     f = SD.open(path, sdfat::O_WRITE| sdfat::O_CREAT| sdfat::O_TRUNC);
->>>>>>> t190123
     if(!f) Serial.printf("open %s failed.\n", path.c_str());
     tStart = tUpdated = now;
   } else if(upload.status == UPLOAD_FILE_WRITE){
